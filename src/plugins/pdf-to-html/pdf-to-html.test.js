@@ -62,6 +62,7 @@ describe("PDF-to-HTML conversion plugin", () => {
 			query: {
 				test: "test",
 				ignoreImages: true,
+				firstPageToConvert: 1,
 			},
 			body: await fsp.readFile(
 				"./test_resources/test_files/pdf_1.3_NHS_Constitution.pdf"

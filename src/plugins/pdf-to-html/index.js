@@ -1,6 +1,8 @@
 const createError = require("http-errors");
 const fp = require("fastify-plugin");
+const fs = require("fs");
 const fsp = require("fs").promises;
+const glob = require("glob");
 const { JSDOM } = require("jsdom");
 const path = require("path");
 const { Poppler } = require("node-poppler");
@@ -31,6 +33,19 @@ async function plugin(server, options) {
 	server.addHook("onRequest", async (req) => {
 		req.pdfToHtmlResults = { body: undefined, docLocation: {} };
 	});
+
+	// server.addHook("onResponse", async (req, res) => {
+	// 	console.log(
+	// 		`${req.pdfToHtmlResults.doclocation.directory}/${req.pdfToHtmlResults.doclocation.id}*`
+	// 	);
+
+	// 	const files = glob.sync(
+	// 		`${req.pdfToHtmlResults.doclocation.directory}/${req.pdfToHtmlResults.doclocation.id}*`
+	// 	);
+	// 	files.forEach((file) => {
+	// 		fs.unlinkSync(file);
+	// 	});
+	// });
 
 	server.addHook("preHandler", async (req, res) => {
 		try {
@@ -66,6 +81,21 @@ async function plugin(server, options) {
 				"wordBreakThreshold",
 				"zoom",
 			];
+
+			// fml
+			Object.keys(query).forEach((value) => {
+				if (query[value] === "true") {
+					query[value] = true;
+				}
+
+				if (query[value] === "false") {
+					query[value] = true;
+				}
+
+				if (parseFloat(query[value]) !== "NaN") {
+					query[value] = parseFloat(query[value]);
+				}
+			});
 
 			Object.keys(query).forEach((value) => {
 				if (!pdfToHtmlAcceptedParams.includes(value)) {
