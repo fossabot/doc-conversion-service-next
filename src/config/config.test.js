@@ -74,6 +74,7 @@ describe("configuration", () => {
 
 		expect(config.poppler).toEqual(
 			expect.objectContaining({
+				encoding: "UTF-8",
 				binPath: POPPLER_BINARY_PATH,
 				tempDirectory: expect.any(String),
 			})
